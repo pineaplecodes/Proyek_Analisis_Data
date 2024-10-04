@@ -22,28 +22,29 @@ st.markdown("""
 # Title with center alignment using HTML
 st.markdown('<p class="center-title">E-Commerce Insights: Seller, Payment, and Transaction Overview</p>', unsafe_allow_html=True)
 
-# Plot functions
+# Plot functions with updated pyplot usage
 def show_bar_chart(dataframe):
     top_10_cities = dataframe.head(10)
 
     colors = plt.cm.Blues(np.linspace(0.4, 1, len(top_10_cities)))
 
-    plt.figure(figsize=(6, 6))  # Keeping the charts square-sized
-    plt.bar(top_10_cities['seller_city'], top_10_cities['Total_Seller'], color=colors)
-    plt.xlabel('City')
-    plt.ylabel('Total Sellers')
-    plt.title('Top 10 Cities by Total Sellers')
-    plt.xticks(rotation=45, ha='right')
+    fig, ax = plt.subplots(figsize=(6, 6))  # Keeping the charts square-sized
+    ax.bar(top_10_cities['seller_city'], top_10_cities['Total_Seller'], color=colors)
+    ax.set_xlabel('City')
+    ax.set_ylabel('Total Sellers')
+    ax.set_title('Top 10 Cities by Total Sellers')
+    ax.set_xticks(range(len(top_10_cities)))
+    ax.set_xticklabels(top_10_cities['seller_city'], rotation=45, ha='right')
     plt.tight_layout()
-    st.pyplot()
+    st.pyplot(fig)
 
 def show_word_cloud(wordcloud):
-    plt.figure(figsize=(6, 6))  # Ensure the same size for the WordCloud as the other plots
-    plt.imshow(wordcloud, interpolation='bilinear')
-    plt.title('Product Category Word Cloud', pad=20)
-    plt.axis('off')
+    fig, ax = plt.subplots(figsize=(6, 6))  # Ensure the same size for the WordCloud as the other plots
+    ax.imshow(wordcloud, interpolation='bilinear')
+    ax.set_title('Product Category Word Cloud', pad=20)
+    ax.axis('off')
     plt.tight_layout()
-    st.pyplot()
+    st.pyplot(fig)
 
 
 def show_payment_chart(df_payments):
@@ -52,14 +53,14 @@ def show_payment_chart(df_payments):
 
     colors = plt.cm.viridis(np.linspace(0, 1, len(grouped_data)))
 
-    plt.figure(figsize=(6, 6))  # Square size for uniformity
-    plt.barh(grouped_data['payment_type'], grouped_data['payment_value'], color=colors)
-    plt.xlabel('Total Payment Value')
-    plt.ylabel('Payment Type')
-    plt.title('Total Payment Value by Payment Type')
-    plt.gca().invert_yaxis()
+    fig, ax = plt.subplots(figsize=(6, 6))  # Square size for uniformity
+    ax.barh(grouped_data['payment_type'], grouped_data['payment_value'], color=colors)
+    ax.set_xlabel('Total Payment Value')
+    ax.set_ylabel('Payment Type')
+    ax.set_title('Total Payment Value by Payment Type')
+    ax.invert_yaxis()
     plt.tight_layout()
-    st.pyplot()
+    st.pyplot(fig)
 
 def show_transaction_binning_chart(df_payments):
     bins = [0, 100, 500, float('inf')]
@@ -70,15 +71,13 @@ def show_transaction_binning_chart(df_payments):
 
     colors = plt.cm.Greens(np.linspace(0.2, 0.8, len(transaction_binning)))
 
-    plt.figure(figsize=(6, 6))  # Square size for uniformity
-    transaction_binning.plot(kind='bar', color=colors)
-
-    plt.title('Transaction Distribution by Value Category')
-    plt.xlabel('Transaction Category')
-    plt.ylabel('Number of Transactions')
-    plt.xticks(rotation=0)
+    fig, ax = plt.subplots(figsize=(6, 6))  # Square size for uniformity
+    ax.bar(transaction_binning.index, transaction_binning, color=colors)
+    ax.set_title('Transaction Distribution by Value Category')
+    ax.set_xlabel('Transaction Category')
+    ax.set_ylabel('Number of Transactions')
     plt.tight_layout()
-    st.pyplot()
+    st.pyplot(fig)
 
 # Load dataframes
 df_sellers = pd.read_csv('https://raw.githubusercontent.com/pineaplecodes/dataset/main/sellers_dataset.csv')
